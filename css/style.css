@@ -1,12 +1,14 @@
-img.noaa-clipped {
-    clip-path: inset(100px 70px 10px 41px);
-    margin: -100px -70px -10px -41px;
-}
 
+@media (min-width: 992px) { 
+    img.noaa-clipped {
+        clip-path: inset(100px 70px 10px 41px);
+        margin: -100px -70px -10px -41px;
+    }
+}
 
 #slider{
     clear: both;
-    width:600px;
+    width:100%;
     margin: 0px 0px 0px 0px;
 }	
 
