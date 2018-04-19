@@ -1,0 +1,16 @@
+img.noaa-clipped {
+    clip-path: inset(100px 70px 10px 41px);
+    margin: -100px -70px -10px -41px;
+}
+
+
+#slider{
+    clear: both;
+    width:600px;
+    margin: 0px 0px 0px 0px;
+}	
+
+/* #progress-bar{ */
+/*     margin-left: 200px; */
+/*     font-size: 40px; */
+/* } */
