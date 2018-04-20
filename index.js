@@ -1,17 +1,22 @@
 const download = require('images-downloader').images,
       fs = require('fs'),
-      request = require('request-promise');
+      request = require('request-promise'),
+      jsonfile = require('jsonfile');
 
 const lakes = ["ontario", "erie", "huron", "superior", "michigan"];
 
+let imageMeta= jsonfile.readFileSync(`images/imageMeta.json`),
+    errors = 1;
+;
 
 async function getLakeImages(lake) {
   let waveDest = `images/${lake}/waves`,
       windDest = `images/${lake}/wind`,
       waveStem = "/" + lake[0] + "wv",
       windStem = "/" + lake[0] + "wn",
-      baseURL = "http://www.glerl.noaa.gov/res/glcfs/";
-
+      baseURL = "http://www.glerl.noaa.gov/res/glcfs/",
+      cast="";
+      
   for (var i = -48; i < 121; i++){
     var offset = i;
     if(offset > 9){
@@ -23,7 +28,7 @@ async function getLakeImages(lake) {
     }else if(offset < 0 && offset > -10){
       offset = "-0"+(i*(-1));
       cast="ncast";
-    }else if(offset == 0){ //skip zero, avoid preload issues
+    }else if(offset == 0){ 
       offset = "-00";
       //i=1;
       cast="ncast";
@@ -31,34 +36,54 @@ async function getLakeImages(lake) {
       cast = "ncast";
     }
 
-    await request(baseURL + cast + waveStem + offset + ".gif")
-      .pipe(fs.createWriteStream(waveDest + waveStem + offset + ".gif"));
-    //console.log(req);
-    //req.pipe(fs.createWriteStream(waveDest + waveStem + offset + ".gif"));
-    console.log(waveDest + waveStem + offset + ".gif");
-    await request(baseURL + cast + windStem + offset + ".gif")
-      .pipe(fs.createWriteStream(windDest + windStem + offset + ".gif"));
-    //promises.push(req);
-    //console.log (`downloaded ${url} to ${image}`);
-    
-    // for (let stem of ["/owv", "/own"]) {
-    //   let url = "http://www.glerl.noaa.gov/res/glcfs/"+cast+ stem + offset+".gif",
-    //       image = "";
-    //   if (stem == "/owv") {
-    //     image = waveDest + stem + offset + ".gif";
-    //   } else {
-    //     image = windDest + stem + offset + ".gif";
-    //   }
-      
-    //   let req = request(url);
-    //   req.pipe(fs.createWriteStream(image));
-    //   //promises.push(req);
-    //   console.log (`downloaded ${url} to ${image}`);
-    // }
-    
+    let wave = {name: waveStem + offset,
+                fullURL: baseURL + cast + waveStem + offset + ".gif",
+                fullPath: waveDest + waveStem + offset + ".gif"},
+        wind = {name: windStem + offset,
+                fullURL: baseURL + cast + windStem + offset + ".gif",
+                fullPath: windDest + windStem + offset + ".gif"};
+    for (w of [wave,wind] ) {
+      let options = {url: w.fullURL,
+                     method: "GET",
+                     resolveWithFullResponse: true,
+                     headers:{'If-Modified-Since': imageMeta[w.name]["lastModified"]},
+                     simple: false
+                    };
+      await request(options)
+        .then(function(response){
+          if (response.statusCode == 200) {
+            console.log(`resolved ${w.name} successfully!`);
+            //fs.createWriteStream(options.fullPath);
+            imageMeta[w.name] = {url: w.fullURL,
+                                 path: w.fullPath,
+                                 lastModified: response.headers['last-modified']};
+            // console.log(imageMeta[w.name]);
+          } else if (response.statusCode == 304) {
+            console.log (`${w.name} is unchanged and does not need to be downloaded.`)
+          } else {
+            console.log(`doesn't look good. ${w.name} returned ${response.statusCode}`);
+            errors += 1;
+          }
+        })
+        .catch (function (err) {
+          console.log(`oops, error! ${err}`);
+          console.dir(w);
+          errors += 1;
+
+        });
+      // try {
+      //   let r = await request(options);
+        
+      // } catch (err) {
+
+      // }
+    }
+
     wave_images.push("http://www.glerl.noaa.gov/res/glcfs/"+cast+"/owv"+ offset+".gif");
     wind_images.push("http://www.glerl.noaa.gov/res/glcfs/"+cast+"/own"+ offset+".gif");
-  }  
+  }
+
+
 }
 
 // The file will be downloaded to this directory. For example: __dirname + '/mediatheque'
@@ -67,7 +92,42 @@ let wave_images = [],
     cast = "";
 
 
-lakes.forEach(function(lake) {getLakeImages(lake)});
+async function allLakes () {
+  let options = {
+    url: "http://www.glerl.noaa.gov/res/glcfs/fcast/owv+01.gif",
+    method: "GET",
+    resolveWithFullResponse: true,
+    headers:{'If-Modified-Since': imageMeta["/owv+01"]["lastModified"]},
+    simple: false
+  }
+
+  request(options)
+    .then(function(results) {
+      if (results.headers.StatusCode == 200 ){
+        let allPromises = [];
+        for (let lake of lakes) {
+          allPromises.push (getLakeImages(lake));
+        }
+        Promise.all(allPromises)
+          .then(function (values) {
+            console.dir(imageMeta);
+            console.log(`there were ${errors} errors loading the files.`);
+            jsonfile.writeFile('images/imageMeta.json', imageMeta, function (err) {
+              console.log(`unable to write to images/imageMeta.json: ${err}`);
+            });
+          });
+      } else if (results.statusCode == 304 ) {
+        console.log(`images don't appear to have changed, aborting download`)
+      } else {
+        console.log(`huh, osmehting went wrong: ${results.statusCode} ${results.statusMessage}`);
+      }
+    })
+    .catch(function(error) {
+      console.log(`Error! ${error}`)
+    });
+
+}
+allLakes();
 
 /**
  * 
