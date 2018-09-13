@@ -4,6 +4,7 @@ const download = require('images-downloader').images,
       jsonfile = require('jsonfile');
 
 const lakes = ["ontario", "erie", "huron", "superior", "michigan"];
+// const lakes = ["ontario"];
 
 let imageMeta= jsonfile.readFileSync(`images/imageMeta.json`),
     errors = 1;
@@ -46,18 +47,33 @@ async function getLakeImages(lake) {
       let options = {url: w.fullURL,
                      method: "GET",
                      resolveWithFullResponse: true,
-                     headers:{'If-Modified-Since': imageMeta[w.name]["lastModified"]},
-                     simple: false
+                     headers:{'If-Modified-Since': imageMeta[w.name]["lastModified"],
+                              'fulldownloadpath':w.fullPath},
+                     encoding: null,
+                     simple: false,
+                     testoptions: "testingnow"
                     };
       await request(options)
         .then(function(response){
+          //console.log ("logging response");
+          // console.log(response.request.headers.fulldownloadpath);
+          let dl = response.request.headers.fulldownloadpath;
           if (response.statusCode == 200) {
+            // jsonfile.writeFile('request-headers.json', response.request.headers, function (err) {
+            //   console.log(`unable to write to request.json: ${err}`);
+            // });
             console.log(`resolved ${w.name} successfully!`);
-            //fs.createWriteStream(options.fullPath);
+            console.log(`attempting to write to ${dl}`);
+            let thisStream = fs.createWriteStream(dl);
+            // console.log(response);
+            thisStream.write(response.body);
+            thisStream.on('finish', () => {
+              console.log('wrote all data to file');
+            });
             imageMeta[w.name] = {url: w.fullURL,
                                  path: w.fullPath,
                                  lastModified: response.headers['last-modified']};
-            // console.log(imageMeta[w.name]);
+            console.log(imageMeta[w.name]);
           } else if (response.statusCode == 304) {
             console.log (`${w.name} is unchanged and does not need to be downloaded.`)
           } else {
@@ -103,7 +119,8 @@ async function allLakes () {
 
   request(options)
     .then(function(results) {
-      if (results.headers.StatusCode == 200 ){
+      
+      if (results.headers.statusCode == 200 ) {
         let allPromises = [];
         for (let lake of lakes) {
           allPromises.push (getLakeImages(lake));
@@ -119,7 +136,7 @@ async function allLakes () {
       } else if (results.statusCode == 304 ) {
         console.log(`images don't appear to have changed, aborting download`)
       } else {
-        console.log(`huh, osmehting went wrong: ${results.statusCode} ${results.statusMessage}`);
+        console.log(`huh, something went wrong: ${results.statusCode} ${results.statusMessage}`);
       }
     })
     .catch(function(error) {
@@ -127,7 +144,14 @@ async function allLakes () {
     });
 
 }
-allLakes();
+allLakes()
+  // .then(function (){
+  //   console.dir(imageMeta);
+  //   console.log(`there were ${errors} errors loading the files.`);
+  //   jsonfile.writeFile('images/imageMeta.json', imageMeta, function (err) {
+  //     console.log(`unable to write to images/imageMeta.json: ${err}`);
+  //   });
+  // });
 
 /**
  * 
@@ -175,6 +199,11 @@ function buildIndexHTML( ) {
 
   
 }
+
+// for (let lake of lakes) {
+//   getLakeImages(lake);
+// }
+
 
 
 
