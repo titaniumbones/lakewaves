@@ -6,10 +6,10 @@ const download = require('images-downloader').images,
 const lakes = ["ontario", "erie", "huron", "superior", "michigan"];
 // const lakes = ["ontario"];
 
-let imageMeta,
+let imageMeta = {},
     errors = 0;
 try {
-  jsonfile.readFileSync(`images/imageMeta.json`);
+  imageMeta = jsonfile.readFileSync(`images/imageMeta.json`);
 } catch (err) {
   console.log("imageMeta.json not found. creating file & initializing empty imagemeta");
   if (!(fs.existsSync("images"))) {
