@@ -20,7 +20,8 @@ function constructImageList(lake) {
       baseURL = "http://www.glerl.noaa.gov/res/glcfs/",
       cast="",
       meta={};
-      
+
+  // ugly, finicky name management
   for (var i = -48; i < 121; i++){
     var offset = i;
     if(offset > 9){
@@ -39,7 +40,7 @@ function constructImageList(lake) {
     } else {
       cast = "ncast";
     }
-
+    // add wach wave and wind to to list
     let wave = {name: waveStem + offset,
                 fullURL: baseURL + cast + waveStem + offset + ".gif",
                 fullPath: waveDest + waveStem + offset + ".gif"},
@@ -57,27 +58,26 @@ function constructImageList(lake) {
 return meta;
 }
 
+// iterate through the lakes and then add all to
+// as single object, which can be written to meta
 function constructFullImageList() {
   let result = {};
-  for (l of lakes) {
+  for (let l of lakes) {
     Object.assign(result, constructImageList(l));
   }
   writeImageMetaToFile("testing.json", result);
   return result;
 }
 
+// stupid utility function
 function writeImageMetaToFile(file, obj) {
   jsonfile.writeFile(file, obj, function (err) {
-    if (err) console.error(err)
+    if (err) console.error(err);
   });
-  // jsonfile.writeFile(file, obj)
-  //   .then(res => {
-  //     console.log('Write complete');
-  //   })
-  //   .catch(error => console.error(error));
+
 }
 
-// takes a single meta object and returns a modified version of it
+// takes an image name and returns a modified version of its meta
 // if successful, otherwise returns an error object
 async function getImage(imageName) {
   let singleMeta = imageMeta[imageName];
@@ -89,8 +89,8 @@ async function getImage(imageName) {
   let options = {url: singleMeta.url,
                  method: "GET",
                  resolveWithFullResponse: true,
-                 headers:{'If-Modified-Since': singleMeta["lastModified"],
-                          'fulldownloadpath':singleMeta.path},
+                 headers:{'If-Modified-Since': modTime,
+                          'fulldownloadpath':path},
                  encoding: null,
                  simple: false,
                  testoptions: "testingnow"
@@ -101,7 +101,6 @@ async function getImage(imageName) {
             console.log(`resolved ${url} successfully!`);
             console.log(`attempting to write to ${path}`);
             let thisStream = fs.createWriteStream(path);
-            // console.log(response);
             thisStream.write(response.body);
             thisStream.end();
             thisStream.on('finish', () => {
@@ -109,15 +108,10 @@ async function getImage(imageName) {
             });
             singleMeta.lastModified = response.headers['last-modified'];
             imageMeta[imageName] = singleMeta;
-            //console.log(imageMeta[imageName]);
-            // imageMeta[w.name] = {url: w.fullURL,
-            //                      path: w.fullPath,
-            //                      lastModified: response.headers['last-modified']};
-            // console.log(imageMeta[w.name]);
           } else if (response.statusCode == 304) {
-            console.log (`${w.name} is unchanged and does not need to be downloaded.`)
+            console.log (`${imageName} is unchanged and does not need to be downloaded.`);
           } else {
-            console.log(`doesn't look good. ${w.name} returned ${response.statusCode}`);
+            console.log(`doesn't look good. ${imageName} returned ${response.statusCode}`);
             errors += 1;
           }
         })
@@ -129,80 +123,48 @@ async function getImage(imageName) {
         });
 
   return singleMeta;
-      // try {
-      //   let r = await request(options);
-        
-      // } catch (err) {
-
-      // }
-    }
-
-async function getLakeImages(lake) {
-      
-  for (var i = -48; i < 121; i++) {
-    for (w of [wave,wind] ) {
-      let options = {url: w.fullURL,
-                     method: "GET",
-                     resolveWithFullResponse: true,
-                     headers:{'If-Modified-Since': imageMeta[w.name]["lastModified"],
-                              'fulldownloadpath':w.fullPath},
-                     encoding: null,
-                     simple: false,
-                     testoptions: "testingnow"
-                    };
-      await request(options)
-        .then(function(response){
-          //console.log ("logging response");
-          // console.log(response.request.headers.fulldownloadpath);
-          let dl = response.request.headers.fulldownloadpath;
-          if (response.statusCode == 200) {
-            // jsonfile.writeFile('request-headers.json', response.request.headers, function (err) {
-            //   console.log(`unable to write to request.json: ${err}`);
-            // });
-            console.log(`resolved ${w.name} successfully!`);
-            console.log(`attempting to write to ${dl}`);
-            let thisStream = fs.createWriteStream(dl);
-            // console.log(response);
-            thisStream.write(response.body);
-            thisStream.on('finish', () => {
-              console.log('wrote all data to file');
-            });
-            imageMeta[w.name] = {url: w.fullURL,
-                                 path: w.fullPath,
-                                 lastModified: response.headers['last-modified']};
-            console.log(imageMeta[w.name]);
-          } else if (response.statusCode == 304) {
-            console.log (`${w.name} is unchanged and does not need to be downloaded.`)
-          } else {
-            console.log(`doesn't look good. ${w.name} returned ${response.statusCode}`);
-            errors += 1;
-          }
-        })
-        .catch (function (err) {
-          console.log(`oops, error! ${err}`);
-          console.dir(w);
-          errors += 1;
-
-        });
-      // try {
-      //   let r = await request(options);
-        
-      // } catch (err) {
-
-      // }
-    }
-
-    wave_images.push("http://www.glerl.noaa.gov/res/glcfs/"+cast+"/owv"+ offset+".gif");
-    wind_images.push("http://www.glerl.noaa.gov/res/glcfs/"+cast+"/own"+ offset+".gif");
-  }
-
-
 }
 
-// The file will be downloaded to this directory. For example: __dirname + '/mediatheque'
-let wave_images = [],
-    wind_images = [],
-    cast = "";
+
+// this is obsolete; we might use it in the future if this becomes a webapp. 
+async function getLakeImages(lake) {
+  let options = {
+    url: "http://www.glerl.noaa.gov/res/glcfs/fcast/owv+01.gif",
+    method: "GET",
+    resolveWithFullResponse: true,
+    headers:{'If-Modified-Since': imageMeta["/owv+01"]["lastModified"]},
+    simple: false
+  };
+
+  request(options)
+    .then(function(results) {
+      console.log(results.statusCode);
+      if (results.statusCode == 200 ) {
+        let allPromises = [];
+        for (let i in imageMeta) {
+          if (i[1] ==  lake[0]) {
+            allPromises.push (getImage(i));
+          }
+        }
+        Promise.all(allPromises)
+          .then(function (values) {
+            console.dir(imageMeta);
+            console.log(`there were ${errors} errors loading the files.`);
+            jsonfile.writeFile('images/imageMeta.json', imageMeta, function (err) {
+              console.log(`unable to write to images/imageMeta.json: ${err}`);
+            });
+          });
+      } else if (results.statusCode == 304 ) {
+        console.log(`images don't appear to have changed, aborting download`);
+      } else {
+        console.log(`huh, something went wrong: ${results.statusCode} ${results.statusMessage}`);
+      }
+    })
+    .catch(function(error) {
+      console.log(`Error! ${error}`);
+    });
+
+}
 
 
 async function allLakes () {
@@ -210,13 +172,13 @@ async function allLakes () {
     url: "http://www.glerl.noaa.gov/res/glcfs/fcast/owv+01.gif",
     method: "GET",
     resolveWithFullResponse: true,
-    headers:{'If-Modified-Since': imageMeta["/owv+01"]["lastModified"]},
+    headers:{'If-Modified-Since': imageMeta["/owv+01"].lastModified},
     simple: false
-  }
+  };
 
   request(options)
     .then(function(results) {
-      console.log(results.statusCode)
+      console.log(results.statusCode);
       if (results.statusCode == 200 ) {
         let allPromises = [];
         for (let i in imageMeta) {
@@ -231,13 +193,13 @@ async function allLakes () {
             });
           });
       } else if (results.statusCode == 304 ) {
-        console.log(`images don't appear to have changed, aborting download`)
+        console.log(`images don't appear to have changed, aborting download`);
       } else {
         console.log(`huh, something went wrong: ${results.statusCode} ${results.statusMessage}`);
       }
     })
     .catch(function(error) {
-      console.log(`Error! ${error}`)
+      console.log(`Error! ${error}`);
     });
 
 }
@@ -262,7 +224,7 @@ function buildNav (lakes) {
     close: `</ul>`
   };
   let navHTML = navWrapper.open;
-  for (l of lakes) {
+  for (let l of lakes) {
     
   }
   
@@ -275,7 +237,7 @@ function buildNav (lakes) {
 function buildIndexHTML( ) {
 
   // assemble navs
-  let navsHTML = buildNav(lakes)
+  let navsHTML = buildNav(lakes);
   
   // assemble tabs
   let tabsWrapper = {
@@ -283,7 +245,7 @@ function buildIndexHTML( ) {
     close: `</div>`
   };
   let tabsHTML = tabsWrapper.open;
-  for (l of lakes) {
+  for (let l of lakes) {
     tabsHTML += buildLakeTab(l);
   }
   tabsHTML += tabsWrapper.close;
@@ -304,24 +266,4 @@ function buildIndexHTML( ) {
 // console.log(getImage(testImage));
 // console.log(constructFullImageList());
 
-allLakes()
-// .then(function (){
-//   console.dir(imageMeta);
-//   console.log(`there were ${errors} errors loading the files.`);
-//   jsonfile.writeFile('images/imageMeta.json', imageMeta, function (err) {
-//     console.log(`unable to write to images/imageMeta.json: ${err}`);
-//   });
-// });
-
-
-
-
-
-
-
-
-
-
-
-
-
+allLakes();
