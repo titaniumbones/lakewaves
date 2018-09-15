@@ -15,6 +15,7 @@ try {
   if (!(fs.existsSync("images"))) {
     console.log("creating images directory");
     fs.mkdir("images");
+    imageMeta = constructFullImageList();
   }
 }
 
