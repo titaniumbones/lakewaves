@@ -12,14 +12,10 @@ try {
   jsonfile.readFileSync(`images/imageMeta.json`);
 } catch (err) {
   console.log("imageMeta.json not found. creating file & initializing empty imagemeta");
-  try {
+  if (!(fs.existsSync("images"))) {
     console.log("creating images directory");
     fs.mkdir("images");
-  } catch (err2){
-    console.log ("huh, unable to create images dir, I guess it already exists.");
   }
-  fs.closeSync(fs.openSync("images/imageMeta.json", 'w'));
-  imageMeta = constructFullImageList();
 }
 
 const defaultModTime = "Sat, 1 Sep 2018 01:12:51 GMT";
