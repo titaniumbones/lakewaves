@@ -7,3 +7,13 @@ The site works by periodically downloading all the images from the [[https://www
 At some point I'd like to use this project as a practice project for learning React and maybe roll it out as a phone app as well. However, I'd have to learn a lot to do that, so it may be a long time before that happens.
 
 The git repo was a bit of a mess, and I have been deploying by hand, so if you find any missing dependencies or other errors please let me know!
+
+** Usage
+This site collects wind and wave forecast images from NOAA's incredible forecasting system, and displays them side by side. I mostly use it to help me decide when to surf, and sometimes when to paddle.  scroll through images by grabbing the slider handle and pulling.  You should also be able to use arrows to navigate between images, but for whatever reason that doesn't always seem to work.  
+
+Click on an image to have it pop up in a slightly larger version in a lightbox. This can be convenient if you're trying to inspect, say, the wave-height curve shape near a piece of shore line you want to surf on.  
+
+** Improvements
+
+There are lots that need to be done.  Please file an issue or just improve the code if you have a suggestion.  
+
