@@ -129,7 +129,7 @@ async function getImage(imageName) {
         })
         .catch (function (err) {
           console.log(`oops, error! ${err}`);
-          console.dir(w);
+          console.log(err);
           errors += 1;
 
         });
