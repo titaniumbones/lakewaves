@@ -1,7 +1,7 @@
 {
   "name": "lakeswell-grid",
-  "version": "0.0.1",
-  "description": "CSS Grid version of Lakeswell clone site",
+  "version": "0.0.2",
+  "description": "node.js version of Lakeswell clone site",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
