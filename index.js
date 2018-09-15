@@ -6,8 +6,16 @@ const download = require('images-downloader').images,
 const lakes = ["ontario", "erie", "huron", "superior", "michigan"];
 // const lakes = ["ontario"];
 
-let imageMeta= jsonfile.readFileSync(`images/imageMeta.json`),
-    errors = 1;
+let imageMeta,
+    errors = 0;
+try {
+  jsonfile.readFileSync(`images/imageMeta.json`);
+} catch (err) {
+  console.log("imageMeta.json not found. creating file & initializing empty imagemeta");
+  fs.closeSync(fs.openSync("images/imageMeta.json", 'w'));
+  imageMeta = constructFullImageList();
+}
+
 const defaultModTime = "Sat, 1 Sep 2018 01:12:51 GMT";
 
 
@@ -65,7 +73,7 @@ function constructFullImageList() {
   for (let l of lakes) {
     Object.assign(result, constructImageList(l));
   }
-  writeImageMetaToFile("testing.json", result);
+  writeImageMetaToFile("images/imageMeta.json", result);
   return result;
 }
 
