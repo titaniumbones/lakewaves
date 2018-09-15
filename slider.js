@@ -154,7 +154,9 @@ $(function() {
 			  {
                             //$('#progress-bar').fadeOut(300);
 
-			    $('#progress-bar').html(`Images last updated ${imageMeta["/own-01"]['lastModified']}`);
+			    //$('#progress-bar').html(`Images last updated ${imageMeta["/own-01"]['lastModified']}`);
+                            $('#progress-bar').html(`Drag the slider handle to watch the forecast`);
+
 			    //load images for +01 (fade in?)
 	                    
 			  }
