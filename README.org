@@ -1,0 +1,9 @@
+* Lakewaves website project
+
+This is a simple rewrite of code found on [[https://lakeswell.com][Lakeswell]], the amazing lake wave and wind visualization site.  For surfers, the far-away view provided by lakeswell is sometimes a little hard to read, so I just downloaded the maps that NOAA creates for individual lakes. As a Torontonian, I mostly use the Lake Ontario tab, but the other ones work also.  
+
+The site works by periodically downloading all the images from the [[https://www.glerl.noaa.gov//res/glcfs/][NOAA GLCFS website]], scraping the data with a very simple javascript algotrithm stolen from lakeswell.  I'd like to use a more sophisticated API but haven't found one yet; if you know more about how GLCFS works, then please let me know.  
+
+At some point I'd like to use this project as a practice project for learning React and maybe roll it out as a phone app as well. However, I'd have to learn a lot to do that, so it may be a long time before that happens.
+
+The git repo was a bit of a mess, and I have been deploying by hand, so if you find any missing dependencies or other errors please let me know!
