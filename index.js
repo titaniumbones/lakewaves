@@ -96,7 +96,7 @@ async function getImage(imageName) {
   let path = singleMeta.path,
       modTime = singleMeta.lastModified,
       url = singleMeta.url;
-  
+    let attempt = 0;
   let options = {url: singleMeta.url,
                  method: "GET",
                  resolveWithFullResponse: true,
@@ -128,8 +128,13 @@ async function getImage(imageName) {
           }
         })
         .catch (function (err) {
-          console.log(`oops, error! ${err}`);
-          console.log(err);
+          console.log(`oops, error on try number ${attempt}! ${err}`);
+            // console.log(err.message);
+            if (err.message == "Error: read ECONNRESET") {
+                console.log(`taking a break before retrying ${imageName}`);
+                setTimeout(getImage, 2000, imageName);
+                
+            }
           errors += 1;
 
         });
