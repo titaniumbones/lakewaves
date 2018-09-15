@@ -1,0 +1,230 @@
+
+<html>
+<head>
+  <!-- <link href="css/main.css" rel="stylesheet" type="text/css"/> -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+  <link rel="stylesheet" href="vendor/lightbox/ekko-lightbox.css">
+  <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="#">Lakeswell</a>
+  <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"> -->
+  <!--   <span class="navbar-toggler-icon"></span> -->
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+    </ul>
+  </div>
+</nav>
+
+
+<div class="container-fluid">
+
+
+  <div class="row mt-3">
+    <div class="col col-md-6 offset-md-3">
+      <div class="title text-center" style="max-width:100%;" id="amount">
+        <div class="title" id="progress-bar"></div>
+        <span id="number">00</span>
+        <span id="text"> hours</span>
+      </div>
+      <div id="slider"></div>
+    </div>
+    <!-- <div class="col-md-6"></div> -->
+  </div>
+
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+
+    <li class="nav-item">
+      <a class="nav-link active" id="ontario-tab" data-toggle="tab" href="#ontario" role="tab" aria-controls="ontario" aria-selected="true">Ontario</a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link" id="huron-tab" data-toggle="tab" href="#huron" role="tab" aria-controls="huron" aria-selected="false">Huron</a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link" id="erie-tab" data-toggle="tab" href="#erie" role="tab" aria-controls="erie" aria-selected="false">Erie</a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link" id="michigan-tab" data-toggle="tab" href="#michigan" role="tab" aria-controls="michigan" aria-selected="false">Michigan</a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link" id="superior-tab" data-toggle="tab" href="#superior" role="tab" aria-controls="superior" aria-selected="false">Superior</a>
+    </li>
+
+
+  </ul>
+  
+  <div class="tab-content" id="lakeTabContent">
+  <div class="tab-pane fade show active" id="ontario" role="tabpanel" aria-labelledby="ontario-tab">
+    <div class="row">
+      <div class="col-md">
+        <div class="table-card">
+          <div class="header text-center">Waves</div>
+          <div class="content">
+            <a id="ontario-wave-link" href="images/waves/owv-01.gif" data-toggle="lightbox" data-gallery="wave">
+              <img id="ontario-waves" class="img-fluid noaa-clipped" src="images/waves/owv-01.gif"/>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md">
+        <div class="table-card">
+          <div class="header text-center">Wind</div>
+          <div class="content">
+            <a id="ontario-wind-link" href="images/wind/own-01.gif" data-toggle="lightbox" data-gallery="wave">
+              <img id="ontario-wind" class="img-fluid noaa-clipped" src="images/wind/own-01.gif"/>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-pane fade" id="huron" role="tabpanel" aria-labelledby="huron-tab">
+    <div class="row">
+      <div class="col-md">
+        <div class="table-card">
+          <div class="header text-center">Waves</div>
+          <div class="content">
+            <a id="huron-wave-link" href="images/waves/owv-01.gif" data-toggle="lightbox" data-gallery="wave">
+              <img id="huron-waves" class="img-fluid noaa-clipped" src="images/waves/owv-01.gif"/>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md">
+        <div class="table-card">
+          <div class="header text-center">Wind</div>
+          <div class="content">
+            <a id="huron-wind-link" href="images/wind/own-01.gif" data-toggle="lightbox" data-gallery="wave">
+              <img id="huron-wind" class="img-fluid noaa-clipped" src="images/wind/own-01.gif"/>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-pane fade" id="erie" role="tabpanel" aria-labelledby="erie-tab">
+    <div class="row">
+      <div class="col-md">
+        <div class="table-card">
+          <div class="header text-center">Waves</div>
+          <div class="content">
+            <a id="erie-wave-link" href="images/waves/owv-01.gif" data-toggle="lightbox" data-gallery="wave">
+              <img id="erie-waves" class="img-fluid noaa-clipped" src="images/waves/owv-01.gif"/>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md">
+        <div class="table-card">
+          <div class="header text-center">Wind</div>
+          <div class="content">
+            <a id="erie-wind-link" href="images/wind/own-01.gif" data-toggle="lightbox" data-gallery="wave">
+              <img id="erie-wind" class="img-fluid noaa-clipped" src="images/wind/own-01.gif"/>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-pane fade" id="superior" role="tabpanel" aria-labelledby="superior-tab">
+    <div class="row">
+      <div class="col-md">
+        <div class="table-card">
+          <div class="header text-center">Waves</div>
+          <div class="content">
+            <a id="superior-wave-link" href="images/waves/owv-01.gif" data-toggle="lightbox" data-gallery="wave">
+              <img id="superior-waves" class="img-fluid noaa-clipped" src="images/waves/owv-01.gif"/>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md">
+        <div class="table-card">
+          <div class="header text-center">Wind</div>
+          <div class="content">
+            <a id="superior-wind-link" href="images/wind/own-01.gif" data-toggle="lightbox" data-gallery="wave">
+              <img id="superior-wind" class="img-fluid noaa-clipped" src="images/wind/own-01.gif"/>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-pane fade" id="michigan" role="tabpanel" aria-labelledby="michigan-tab">
+    <div class="row">
+      <div class="col-md">
+        <div class="table-card">
+          <div class="header text-center">Waves</div>
+          <div class="content">
+            <a id="michigan-wave-link" href="images/waves/owv-01.gif" data-toggle="lightbox" data-gallery="wave">
+              <img id="michigan-waves" class="img-fluid noaa-clipped" src="images/waves/owv-01.gif"/>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md">
+        <div class="table-card">
+          <div class="header text-center">Wind</div>
+          <div class="content">
+            <a id="michigan-wind-link" href="images/wind/own-01.gif" data-toggle="lightbox" data-gallery="wave">
+              <img id="michigan-wind" class="img-fluid noaa-clipped" src="images/wind/own-01.gif"/>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+</div>
+<div class="row bg-dark">
+  <footer id="footer">
+    <p>Images from <a href="http://www.glerl.noaa.gov/res/glcfs/" target="_blank">GLCFS by GLERL</a>.</p> 
+  </footer>
+
+</div>
+
+<!-- <div class="table-cards"> -->
+<!--   <div class="table-card"> -->
+<!--     <div class="header">Wind</div> -->
+<!--     <div class="content"> -->
+<!--       <img src="out.gif"/> -->
+<!--     </div> -->
+<!--   </div> -->
+
+
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
+  <script
+    src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+    integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  <script src="vendor/lightbox/ekko-lightbox.min.js"></script>
+  <script src="vendor/imgpreload/jquery.imgpreload.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+
+  <script>
+    $(document).on('click', '[data-toggle="lightbox"]', function(event) {
+      event.preventDefault();
+      $(this).ekkoLightbox();
+    });
+  </script>
+
+    <script src="slider.js"></script>
+
+</html>
