@@ -106,6 +106,7 @@ async function getImage(imageName) {
                  simple: false,
                  testoptions: "testingnow"
                 };
+  setTimeout(console.log, 1000, `waiting for a sec to get ${path}`)
   await request(options)
         .then(function(response){
           if (response.statusCode == 200) {
