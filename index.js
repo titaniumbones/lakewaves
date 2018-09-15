@@ -1,25 +1,22 @@
 const download = require('images-downloader').images,
       fs = require('fs'),
+      fse = require('fs-extra');
       request = require('request-promise'),
       jsonfile = require('jsonfile');
-
+const defaultModTime = "Sat, 1 Sep 2018 01:12:51 GMT";
 const lakes = ["ontario", "erie", "huron", "superior", "michigan"];
 // const lakes = ["ontario"];
 
 let imageMeta = {},
     errors = 0;
+
 try {
   imageMeta = jsonfile.readFileSync(`images/imageMeta.json`);
 } catch (err) {
   console.log("imageMeta.json not found. creating file & initializing empty imagemeta");
-  if (!(fs.existsSync("images"))) {
-    console.log("creating images directory");
-    fs.mkdir("images");
-    imageMeta = constructFullImageList();
-  }
+  fse.ensureFileSync("images/imageMeta.json");
+  imageMeta = constructFullImageList();
 }
-
-const defaultModTime = "Sat, 1 Sep 2018 01:12:51 GMT";
 
 
 function constructImageList(lake) {
@@ -31,7 +28,10 @@ function constructImageList(lake) {
       baseURL = "http://www.glerl.noaa.gov/res/glcfs/",
       cast="",
       meta={};
-
+  fse.ensureDirSync(waveDest);
+  fse.ensureDirSync(windDest);
+  
+  
   // ugly, finicky name management
   for (var i = -48; i < 121; i++){
     var offset = i;
